@@ -41,7 +41,6 @@ public class Bank {
     }
 
     public static void main(String[] args) {
-        //You can test your implemented functions here.
         BigInteger accountNumber = new BigInteger("123456789012345678");
         BigInteger validIBAN = new BigInteger("43123456789012345678");
         checkLengthAndSignWhenGenerating(accountNumber);
@@ -50,7 +49,7 @@ public class Bank {
 
     public static boolean validateIBAN(BigInteger iban) {
         //Hint: first, think about the return type
-//        rearrange IBAN
+//        rearrange IBAN (use parameter type string due to leading zero problem: leading zero (check sum) is not possible for type BitInteger)
         BigInteger rearranged_iban = rearrangeIBAN(String.valueOf(iban));
 
 //        Compute remainder for 97: 123456789012345678131443 mod 97 = x
