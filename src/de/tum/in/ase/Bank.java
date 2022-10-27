@@ -21,8 +21,9 @@ public class Bank {
         if (iban.compareTo(BigInteger.TEN.pow(20)) >= 0 || iban.compareTo(BigInteger.TEN.pow(19)) < 0) {
             return false;
         } else {
-            // TODO: What needs to be returned here? Hint: Have a look at what "BigInteger checkLengthAndSignWhenGenerating(BigInteger accountNumber)" returns in a similar situation and check the Javadoc above.
-            return false;
+            // TODO: What needs to be returned here?
+            //  Hint: Have a look at what "BigInteger checkLengthAndSignWhenGenerating(BigInteger accountNumber)" returns in a similar situation and check the Javadoc above.
+            return validateIBAN(iban);
         }
     }
 
@@ -47,24 +48,68 @@ public class Bank {
 
     public static boolean validateIBAN(BigInteger iban) {
         //Hint: first, think about the return type
-        //TODO: IBAN: DE43123456789012345678
-        //TODO: Rearrange: 123456789012345678DE43
-        //TODO: Convert characters to numbers by using: A=10, B=11, C=12,…: 123456789012345678131443
-        //TODO: Compute remainder for 97: 123456789012345678131443 mod 97 = x
-        //TODO: If the remainder x is 1 the check passed and the IBAN might be valid
+//        rearrange IBAN
+        BigInteger rearranged_iban = rearrangeIBAN(iban);
 
-      	return false;
+//        Compute remainder for 97: 123456789012345678131443 mod 97 = x
+        BigInteger remainder = calculateRemainder(rearranged_iban);
+
+        //Validate IBAN: If the remainder x is 1 the check passed and the IBAN might be valid, else invalid
+        if (remainder.compareTo(BigInteger.ONE) == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static BigInteger generateIBAN(BigInteger accountNumber) {
-        //TODO: Set checksum to 00: DE00123456789012345678
-        //TODO: Rearrange: 123456789012345678DE00
-        //TODO: Convert characters to numbers by using: A=10, B=11, C=12,…: 123456789012345678131400
-        //TODO: Calculate remainder for 97: 123456789012345678131400 mod 97 = x
-        //TODO: Subtract x from 98 for the checksum: 98 - x = 43
-        //TODO: Add checksum to IBAN: DE43123456789012345678
+        //Set checksum to 00: DE00123456789012345678
+        BigInteger iban = new BigInteger("DE" + "00" + String.valueOf(accountNumber));
+        //Rearrange: 123456789012345678DE00
+        BigInteger rearranged_iban = rearrangeIBAN(iban);
+        //Calculate remainder for 97: 123456789012345678131400 mod 97 = x
+        BigInteger remainder = calculateRemainder(rearranged_iban);
+        //Generate new check sum
+        BigInteger new_check_sum = generateCheckSum(remainder);
+        //Add new checksum to IBAN: DE43123456789012345678
+        BigInteger new_iban = new BigInteger("DE" + String.valueOf(new_check_sum) + String.valueOf(accountNumber));
+        return new_iban;
+    }
 
-        return null;
+    public static BigInteger calculateRemainder(BigInteger iban) {
+        //Compute remainder for 97: 123456789012345678131443 mod 97 = x
+        BigInteger DENOMINATOR_97 = new BigInteger("97");
+        BigInteger remainder = iban.mod(DENOMINATOR_97);
+        return remainder;
+    }
+
+    public static BigInteger generateCheckSum(BigInteger remainder) {
+        //Generate new check sum: Subtract x from 98 for the checksum: 98 - x = 43
+//        Subtraction: Minuend - Subtrahend (Math terms)
+        BigInteger MINUEND_98 = new BigInteger("98");
+        BigInteger new_check_sum = MINUEND_98.subtract(remainder);
+        return new_check_sum;
+    }
+
+    public static String convertCharacterToNumberString(String letters) {
+        String letter_one = String.valueOf(Character.getNumericValue(letters.charAt(0)));
+        String letter_two = String.valueOf(Character.getNumericValue(letters.charAt(1)));
+        return letter_one + letter_two;
+    }
+
+    public static BigInteger rearrangeIBAN(BigInteger iban) {
+        //TODO: IBAN: DE43123456789012345678 - done
+        String account_data_string = iban.toString();
+        String letters = account_data_string.substring(0,2);
+        String check_sum = account_data_string.substring(2,4);
+        String account_number = account_data_string.substring(4,22);
+        //Rearrange: 123456789012345678DE43
+//        Convert characters into numeric value by using: A=10, B=11, C=12,…: 123456789012345678131443
+        String letters_number_string = convertCharacterToNumberString(letters);
+//        Rearrange IBAN in the order of "account_number, letters (into numeric value), check_sum" and convert back into type BigInteger
+        BigInteger rearranged_iban = new BigInteger(account_number + letters_number_string + check_sum);
+        System.out.printf("account_info: %d%n", rearranged_iban);
+        return rearranged_iban;
     }
 
 }
