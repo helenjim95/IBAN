@@ -44,6 +44,8 @@ public class Bank {
         //You can test your implemented functions here.
         BigInteger accountNumber = new BigInteger("123456789012345678");
         BigInteger validIBAN = new BigInteger("43123456789012345678");
+        checkLengthAndSignWhenGenerating(accountNumber);
+        checkLengthAndSignWhenValidating(validIBAN);
     }
 
     public static boolean validateIBAN(BigInteger iban) {
@@ -98,11 +100,11 @@ public class Bank {
     }
 
     public static BigInteger rearrangeIBAN(BigInteger iban) {
-        //TODO: IBAN: DE43123456789012345678 - done
+        //add DE to front of IBAN: 43123456789012345678 -> DE43123456789012345678
         String account_data_string = iban.toString();
-        String letters = account_data_string.substring(0,2);
-        String check_sum = account_data_string.substring(2,4);
-        String account_number = account_data_string.substring(4,22);
+        String letters = "DE";
+        String check_sum = account_data_string.substring(0,2);
+        String account_number = account_data_string.substring(2,20);
         //Rearrange: 123456789012345678DE43
 //        Convert characters into numeric value by using: A=10, B=11, C=12,…: 123456789012345678131443
         String letters_number_string = convertCharacterToNumberString(letters);
