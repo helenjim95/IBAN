@@ -66,7 +66,7 @@ public class Bank {
 
     public static BigInteger generateIBAN(BigInteger accountNumber) {
         //Set checksum to 00: DE00123456789012345678
-        BigInteger iban = new BigInteger("DE" + "00" + String.valueOf(accountNumber));
+        BigInteger iban = new BigInteger("DE00" + String.valueOf(accountNumber));
         //Rearrange: 123456789012345678DE00
         BigInteger rearranged_iban = rearrangeIBAN(iban);
         //Calculate remainder for 97: 123456789012345678131400 mod 97 = x
@@ -74,7 +74,7 @@ public class Bank {
         //Generate new check sum
         BigInteger new_check_sum = generateCheckSum(remainder);
         //Add new checksum to IBAN: DE43123456789012345678
-        BigInteger new_iban = new BigInteger("DE" + String.valueOf(new_check_sum) + String.valueOf(accountNumber));
+        BigInteger new_iban = new BigInteger( String.valueOf(new_check_sum) + String.valueOf(accountNumber));
         return new_iban;
     }
 
