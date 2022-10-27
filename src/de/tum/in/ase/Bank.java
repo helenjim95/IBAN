@@ -66,7 +66,7 @@ public class Bank {
 
     public static BigInteger generateIBAN(BigInteger accountNumber) {
         //Set checksum to 00: DE00123456789012345678
-        BigInteger iban = new BigInteger("DE00" + String.valueOf(accountNumber));
+        BigInteger iban = new BigInteger("00" + String.valueOf(accountNumber));
         //Rearrange: 123456789012345678DE00
         BigInteger rearranged_iban = rearrangeIBAN(iban);
         //Calculate remainder for 97: 123456789012345678131400 mod 97 = x
@@ -102,12 +102,12 @@ public class Bank {
     public static BigInteger rearrangeIBAN(BigInteger iban) {
         //add DE to front of IBAN: 43123456789012345678 -> DE43123456789012345678
         String account_data_string = iban.toString();
-        String letters = "DE";
+        String LETTERS = "DE";
         String check_sum = account_data_string.substring(0,2);
         String account_number = account_data_string.substring(2,20);
         //Rearrange: 123456789012345678DE43
 //        Convert characters into numeric value by using: A=10, B=11, C=12,…: 123456789012345678131443
-        String letters_number_string = convertCharacterToNumberString(letters);
+        String letters_number_string = convertCharacterToNumberString(LETTERS);
 //        Rearrange IBAN in the order of "account_number, letters (into numeric value), check_sum" and convert back into type BigInteger
         BigInteger rearranged_iban = new BigInteger(account_number + letters_number_string + check_sum);
         System.out.printf("account_info: %d%n", rearranged_iban);
