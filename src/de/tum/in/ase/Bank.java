@@ -51,7 +51,7 @@ public class Bank {
     public static boolean validateIBAN(BigInteger iban) {
         //Hint: first, think about the return type
 //        rearrange IBAN
-        BigInteger rearranged_iban = rearrangeIBAN(iban);
+        BigInteger rearranged_iban = rearrangeIBAN(String.valueOf(iban));
 
 //        Compute remainder for 97: 123456789012345678131443 mod 97 = x
         BigInteger remainder = calculateRemainder(rearranged_iban);
@@ -66,9 +66,9 @@ public class Bank {
 
     public static BigInteger generateIBAN(BigInteger accountNumber) {
         //Set checksum to 00: DE00123456789012345678
-        BigInteger iban = new BigInteger("00" + String.valueOf(accountNumber));
+        String iban_string = String.valueOf("00") + String.valueOf(accountNumber);
         //Rearrange: 123456789012345678DE00
-        BigInteger rearranged_iban = rearrangeIBAN(iban);
+        BigInteger rearranged_iban = rearrangeIBAN(iban_string);
         //Calculate remainder for 97: 123456789012345678131400 mod 97 = x
         BigInteger remainder = calculateRemainder(rearranged_iban);
         //Generate new check sum
@@ -99,18 +99,16 @@ public class Bank {
         return letter_one + letter_two;
     }
 
-    public static BigInteger rearrangeIBAN(BigInteger iban) {
+    public static BigInteger rearrangeIBAN(String iban) {
         //add DE to front of IBAN: 43123456789012345678 -> DE43123456789012345678
-        String account_data_string = iban.toString();
         String LETTERS = "DE";
-        String check_sum = account_data_string.substring(0,2);
-        String account_number = account_data_string.substring(2,20);
+        String check_sum = iban.substring(0,2);
+        String account_number = iban.substring(2,20);
         //Rearrange: 123456789012345678DE43
 //        Convert characters into numeric value by using: A=10, B=11, C=12,…: 123456789012345678131443
         String letters_number_string = convertCharacterToNumberString(LETTERS);
 //        Rearrange IBAN in the order of "account_number, letters (into numeric value), check_sum" and convert back into type BigInteger
         BigInteger rearranged_iban = new BigInteger(account_number + letters_number_string + check_sum);
-        System.out.printf("account_info: %d%n", rearranged_iban);
         return rearranged_iban;
     }
 
